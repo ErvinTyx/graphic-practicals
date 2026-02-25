@@ -364,26 +364,7 @@ void display()
 
         case 5:
 
-            glBegin(GL_QUADS);
-
-            glColor3f(1,1,1);
-
-            glVertex2f(-0.8f,0.5f);
-            glVertex2f(-0.8f,-0.5f);
-            glVertex2f(0.8f,-0.5f);
-            glVertex2f(0.8f,0.5f);
-
-            glEnd();
-
-
-            glBegin(GL_POLYGON);
-
-            glColor3f(1,0,0);
-
-            DrawCircle(0.2f);
-
-            glEnd();
-
+            five();    
         break;
 
 
