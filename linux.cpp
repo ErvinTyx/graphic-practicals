@@ -8,8 +8,15 @@ int questionNum = 1;
 
 float positionx = 0.0f;
 float positiony = 0.0f;
+float automovex = 0.0f;
+float automovey = 0.0f;
+float autoscale = 1.0f;
 float movementspeed = 0.1f;
 float rotationangle = 0.0f;
+float red = 1.0f;
+float green = 1.0f;
+float blue = 1.0f;
+
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -20,8 +27,74 @@ void one();
 void two();
 void three();
 void four();
-void five();
-void six();
+void setRed();
+void setGreen();
+void setBlue();
+void resetColor();
+void resetPosition();
+void resetRotation();
+void DrawStar(float radius, float positionx, float positiony, float rotationangle);
+
+void DrawStar(float radius, float positionx = 0.0f, float positiony = 0.0f, float rotationangle = 0.0f, float red = 1.0f, float green = 1.0f, float blue = 0.0f){
+    // draw star
+    glBegin(GL_TRIANGLE_FAN);
+    glColor3f(red, green, blue);
+    glVertex2f(positionx, positiony);  // center of star
+    for (int i = 0; i < 360; i += 72)
+    {
+        float tempX, tempY;
+        tempX = positionx + radius * sin(DegreeToRadian(i + rotationangle));
+        tempY = positiony + radius * cos(DegreeToRadian(i + rotationangle));
+        glVertex2f(tempX, tempY);
+
+        tempX = positionx + radius/2.0f * sin(DegreeToRadian(i + 36 + rotationangle));  // offset by 36 degrees for star points
+        tempY = positiony + radius/2.0f * cos(DegreeToRadian(i + 36 + rotationangle));
+        glVertex2f(tempX, tempY);
+    }
+    glVertex2f(positionx + radius * sin(DegreeToRadian(0 + rotationangle)), positiony + radius * cos(DegreeToRadian(0 + rotationangle)));  // close fan
+    glEnd();
+}
+
+void resetRotation()
+{
+    rotationangle = 0.0f;
+}
+
+
+void resetPosition()
+{
+    positionx = 0.0f;
+    positiony = 0.0f;
+}
+
+void setRed()
+{
+    red = 1.0f;
+    green = 0.0f;
+    blue = 0.0f;
+}
+
+void setGreen()
+{
+    red = 0.0f;
+    green = 1.0f;
+    blue = 0.0f;
+}
+
+void setBlue()
+{
+    red = 0.0f;
+    green = 0.0f;
+    blue = 1.0f;
+}
+
+void resetColor()
+{
+    red = 1.0f;
+    green = 1.0f;
+    blue = 1.0f;
+}
+
 
 // Convert degree to radian
 float DegreeToRadian(float degree)
@@ -60,8 +133,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             case GLFW_KEY_2: questionNum = 2; break;
             case GLFW_KEY_3: questionNum = 3; break;
             case GLFW_KEY_4: questionNum = 4; break;
-            case GLFW_KEY_5: questionNum = 5; break;
-            case GLFW_KEY_6: questionNum = 6; break;
 
             case GLFW_KEY_UP:
                 positiony += movementspeed;
@@ -86,6 +157,20 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             case GLFW_KEY_P:
                 rotationangle -= movementspeed;
                 break;
+            case GLFW_KEY_R:
+                setRed();
+                break;
+            case GLFW_KEY_G:
+                setGreen();
+                break;
+            case GLFW_KEY_B:
+                setBlue();
+                break;
+            case GLFW_KEY_SPACE:
+                resetColor();
+                resetPosition();
+                resetRotation();
+                break;
         }
 
     }
@@ -99,246 +184,78 @@ void one()
     glRotatef(rotationangle,0,0,1);
 
 
-    glBegin(GL_QUADS);
-
-    glColor3f(1,1,1);
-
-    glVertex2f(-0.8f,0.5f);
-    glVertex2f(-0.8f,0);
-    glVertex2f(0.8f,0);
-    glVertex2f(0.8f,0.5f);
-
+    glBegin(GL_POLYGON);
+    glColor3f(red,green,blue); //white
+    glVertex2f(-0.5f,0.5f);
+    glVertex2f(-0.5f,-0.5f);
+    glVertex2f(0.5f,-0.5f);
+    glVertex2f(0.5f,0.5f);
     glEnd();
 
-
-    glBegin(GL_QUADS);
-
-    glColor3f(0,0,0);
-
-    glVertex2f(-0.8f,0);
-    glVertex2f(-0.8f,-0.5f);
-    glVertex2f(0.8f,-0.5f);
-    glVertex2f(0.8f,0);
-
-    glEnd();
 }
 
 void two()
 {
-    glBegin(GL_QUADS);
-    glColor3f(1.0f, 1.0f, 0.0f);  //yellow
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(-0.8f, -0.5f);
-    glVertex2f(0.8f, -0.5f);
-    glVertex2f(0.8f, 0.5f);
-    glEnd();
+    // make the star bounce around the screen by using positionx and positiony automatically updated in the key callback function
 
-    glBegin(GL_TRIANGLES);
-    glColor3f(1.0f, 0.0f, 0.0f);  //red
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(0.0f, 0.5f);
-    glVertex2f(0.0f, 0.0f);
-    glEnd();
-
-    glBegin(GL_TRIANGLES);
-    glColor3f(0.0f, 0.0f, 0.0f);  //black
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(-0.8f, 0.0f);
-    glVertex2f(0.0f, 0.0f);
-    glEnd();
+    automovex += movementspeed * 0.5f; // move right
+    automovey += movementspeed * 0.3f; // move up
+    autoscale += movementspeed * 0.2f; // scale up
+    rotationangle += movementspeed * 50.0f; // rotate
+    
+    DrawStar(.5f * autoscale, automovex, automovey, rotationangle, red, green, blue=0.0f);
+     // bounce back when hitting the edges of the screen
+    if (automovex > 0.8f || automovex < -0.8f)
+    {
+        movementspeed *= -1;
+        // make yellow color increment change when bouncing
+        float delta = 0.5f;
+        if (red > delta)
+        {
+            red -= delta;
+            green -= delta;
+        }
+        else
+        {
+            red += delta;
+            green += delta;
+        }
+    }
 }
 
 void three()
 {
-    glBegin(GL_TRIANGLE_FAN);
-    glColor3f(1.0f, 1.0f, 1.0f);  // white center
-    glVertex2f(0.0f, 0.0f);
-
-    glColor3f(0.65f, 0.65f, 0.65f);  // light grey edges
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(-0.8f, -0.5f);
-    glVertex2f(0.8f, -0.5f);
-    glVertex2f(0.8f, 0.5f);
-
-    glVertex2f(-0.8f, 0.5f);  // close fan
+    // Create an OpenGL point which moving anti-clockwise using glTransform and glRotation.
+    static float angle = 0.0f;
+    angle += 1.0f; // Increment angle by 1 degree each frame
+    float radius = 0.5f;
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, 0.0f);
+    glRotatef(angle, 0.0f, 0.0f, 1.0f);
+    glBegin(GL_POINTS);
+    glColor3f(1.0f, 1.0f, 1.0f); // red point
+    glVertex2f(radius, 0.0f);
     glEnd();
-
-    glBegin(GL_QUADS);
-    glColor3f(1.0f, 0.0f, 0.0f);  //red
-    glVertex2f(-0.1f, 0.5f);
-    glVertex2f(-0.1f, -0.5f);
-    glVertex2f(0.1f, -0.5f);
-    glVertex2f(0.1f, 0.5f);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glColor3f(1.0f, 0.0f, 0.0f);  //red
-    glVertex2f(-0.8f, 0.1f);
-    glVertex2f(-0.8f, -0.1f);
-    glVertex2f(0.8f, -0.1f);
-    glVertex2f(0.8f, 0.1f);
-    glEnd();
+    glPopMatrix();
 }
 
 void four()
 {
-    // draw rectangle
+    // Create an expendable red box which will expend it size automatically and shrink back when hitting the edges.
+    static float scale = 0.1f;
+    scale += 0.01f; // Increase scale over time
+    if (scale > 1.0f) scale = 0.1f; // Reset scale when it exceeds 1.0f
+    glPushMatrix();
+    glScalef(scale, scale, 1.0f);
     glBegin(GL_QUADS);
-    glColor3f(0.0f, 0.0f, 1.0f);  //blue
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(-0.8f, -0.5f);
-    glVertex2f(0.8f, -0.5f);
-    glVertex2f(0.8f, 0.5f);
+    glColor3f(1.0f, 0.0f, 0.0f); // red color
+    glVertex2f(-0.5f, -0.5f);
+    glVertex2f(-0.5f, 0.5f);
+    glVertex2f(0.5f, 0.5f);
+    glVertex2f(0.5f, -0.5f);
     glEnd();
-
-    // draw polygon top left to bottom right
-    glBegin(GL_POLYGON); 
-    glColor3f(1.0f, 1.0f,1.0f);  //white
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(-0.7f, 0.5f);
-    glVertex2f(0.8f, -0.4f);
-    glVertex2f(0.8f, -0.5f);
-    glVertex2f(0.7f,-0.5f);
-    glVertex2f(-0.8f, 0.4f);
-    glEnd();
-
-    // draw polygon top right to bottom left
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 1.0f, 1.0f);  //white
-    glVertex2f(0.8f, 0.5f);
-    glVertex2f(0.7f, 0.5f);
-    glVertex2f(-0.8f, -0.4f);
-    glVertex2f(-0.8f, -0.5f);
-    glVertex2f(-0.7f, -0.5f);
-    glVertex2f(0.8f, 0.4f);
-    glEnd();
-
-
+    glPopMatrix();
 }
-
-void five()
-{
-    glBegin(GL_QUADS);
-    glColor3f(1.0f, 1.0f, 1.0f);  //white
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(-0.8f, -0.5f);
-    glVertex2f(0.8f, -0.5f);
-    glVertex2f(0.8f, 0.5f);
-    glEnd();
-
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 0.0f, 0.0f);  //red
-    DrawCircle(0.2);
-    glEnd();
-}
-
-void six()
-{
-    // draw vomit emoji
-    // draw face
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 1.0f, 0.0f);  //yellow
-    DrawCircle(0.5);
-    glEnd();
-
-    // draw mouth
-    // Top Left — Red
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glVertex2f(-0.2f, -0.1f);
-
-    // Bottom Left — Orange/Red
-    glColor3f(1.0f, 0.5f, 0.0f);
-    glVertex2f(-0.2f, -0.5f);
-
-    // Bottom Right — Violet
-    glColor3f(0.5f, 0.0f, 1.0f);
-    glVertex2f(0.2f, -0.5f);
-
-    // Top Right — Blue/Violet
-    glColor3f(0.3f, 0.0f, 1.0f);
-    glVertex2f(0.2f, -0.1f);
-
-    glEnd();
-
-    // draw right eyes
-    glBegin(GL_POLYGON);
-    glColor3f(0.8863f, 0.6157f, 0.1765f);  // #E29D2D
-    for (int i = 0; i < 360; i += 10)
-    {
-        float tempX = 0.1f * sin(DegreeToRadian(i)) + 0.2f;
-        float tempY = 0.1f * cos(DegreeToRadian(i)) + 0.2f;
-
-        glVertex2f(tempX, tempY);
-    }
-    glEnd();
-
-    // draw left eye
-    glBegin(GL_POLYGON);
-    glColor3f(0.8863f, 0.6157f, 0.1765f);  // #E29D2D
-    for (int i = 0; i < 360; i += 10)
-    {
-        float tempX = 0.1f * sin(DegreeToRadian(i)) + -0.2f;
-        float tempY = 0.1f * cos(DegreeToRadian(i)) + 0.2f;
-
-        glVertex2f(tempX, tempY);
-    }
-    glEnd();
-
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 1.0f, 1.0f);  // white
-    for (int i = 0; i < 360; i += 10)
-    {
-        float tempX = 0.05f * sin(DegreeToRadian(i)) + -0.2f;
-        float tempY = 0.05f * cos(DegreeToRadian(i)) + 0.2f;
-
-        glVertex2f(tempX, tempY);
-    }
-    glEnd();
-
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 1.0f, 1.0f);  // white
-    for (int i = 0; i < 360; i += 10)
-    {
-        float tempX = 0.05f * sin(DegreeToRadian(i)) + 0.2f;
-        float tempY = 0.05f * cos(DegreeToRadian(i)) + 0.2f;
-
-        glVertex2f(tempX, tempY);
-    }
-    glEnd();
-
-
-
-    // draw rectangle hat
-    glBegin(GL_QUADS);
-    glColor3f(0.0f, 0.0f, 0.0f);  //black
-    glVertex2f(-0.3f, 0.7f);
-    glVertex2f(0.3f, 0.7f);
-    glVertex2f(0.3f, 0.5f);
-    glVertex2f(-0.3f, 0.5f);
-    glEnd();
-
-    // draw rectangle hat
-    glBegin(GL_QUADS);
-    glColor3f(0.0f, 0.0f, 0.0f);  //black
-    glVertex2f(-0.3f, 0.5f);
-    glVertex2f(0.3f, 0.5f);
-    glVertex2f(0.6f, 0.35f);
-    glVertex2f(-0.6f, 0.35f);
-    glEnd();
-
-    // draw nose
-    glBegin(GL_TRIANGLES);
-    glColor3f(0.8863f, 0.6157f, 0.1765f);  // #E29D2D
-    glVertex2f(0.0f, 0.1f);
-    glVertex2f(-0.03f, 0.0f);
-    glVertex2f(0.03f, 0.0f);
-    glEnd();
-
-    
-}
-
-
 void display()
 {
 
@@ -360,24 +277,7 @@ void display()
         case 4:
             four();
         break;
-
-
-        case 5:
-
-            five();    
-        break;
-
-
-
-        case 6:
-
-            six();
-
-        break;
-
-
     }
-
 }
 
 
