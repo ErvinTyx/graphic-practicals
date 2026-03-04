@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <math.h>
 #include <stdio.h>
+#include <iostream>
 
 // Global variables
 int questionNum = 1;
@@ -10,6 +11,7 @@ float positionx = 0.0f;
 float positiony = 0.0f;
 float movementspeed = 0.1f;
 float rotationangle = 0.0f;
+float rotationSpeed = 1.0f;
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -22,6 +24,14 @@ void three();
 void four();
 void five();
 void six();
+void DrawFloorBrown();
+void DrawFloorGreen();
+void DrawFlower(float x, float y, float colorR, float colorG, float colorB , float innerColorR, float innerColorG, float innerColorB);
+void DrawCloud();
+void DrawSemiCircle(float radius);
+void DrawOval(float radiusX, float radiusY);
+void DrawFan();
+void DrawPropeller();
 
 // Convert degree to radian
 float DegreeToRadian(float degree)
@@ -42,7 +52,272 @@ void DrawCircle(float radius)
     }
 }
 
+void DrawSemiCircle(float radius)
+{
+    for (int i = 0; i < 180; i += 10)
+    {
+        float tempX = radius * sin(DegreeToRadian(i));
+        float tempY = radius * cos(DegreeToRadian(i));
 
+        glVertex2f(tempX, tempY);
+    }
+}
+
+void DrawOval(float radiusX, float radiusY)
+{
+    for (int i = 0; i < 360; i += 10)
+    {
+        float tempX = radiusX * sin(DegreeToRadian(i));
+        float tempY = radiusY * cos(DegreeToRadian(i));
+
+        glVertex2f(tempX, tempY);
+    }
+}
+
+void DrawFan()
+{
+    // draw retangle
+
+    //glTranslatef(0.0f, 0.1f, 0.0f); //  
+    
+    glBegin(GL_QUADS);
+    glColor3f(0.0f, 0.0f, 1.0f);  // blue
+    glVertex2f(-0.01f, -0.5f);
+    glVertex2f(-0.01f, 0.5f);
+    glVertex2f(0.01f, 0.5f);
+    glVertex2f(0.01f, -0.5f);
+    glEnd();
+
+
+    //glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+    glPushMatrix();
+    glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(0.0f,0.0f, 0.0f);
+    glBegin(GL_QUADS);
+    glColor3f(0.0f, 0.0f, 1.0f);  // blue
+    glVertex2f(-0.01f, -0.5f);
+    glVertex2f(-0.01f, 0.5f);
+    glVertex2f(0.01f, 0.5f);
+    glVertex2f(0.01f, -0.5f);
+    glEnd();
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glRotatef(0.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(-0.05f, 0.35f, 0.0f);
+    DrawPropeller();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(-0.05f, 0.35f, 0.0f);
+    DrawPropeller();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(-0.05f, 0.35f, 0.0f);
+    DrawPropeller();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(270.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(-0.05f, 0.35f, 0.0f);
+    DrawPropeller();
+    glPopMatrix();
+
+    glBegin(GL_POLYGON);
+    glColor3f(1.0f, 1.0f, 1.0f);  // white
+    DrawCircle(0.05f);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+    glColor3f(1.0f, 0.0f, 0.0f);  // red
+    DrawCircle(0.025f);
+    glEnd();
+
+
+
+
+    //DrawPropeller();
+
+
+
+
+}
+
+void DrawPropeller()
+{
+    glBegin(GL_QUADS);
+    glColor3f(0.0f, 0.0f, 1.0f);  // blue
+    glVertex2f(-0.05f, -0.15f);
+    glVertex2f(-0.05f, 0.15f);
+    glVertex2f(0.05f, 0.15f);
+    glVertex2f(0.05f, -0.15f);
+    glEnd();
+}
+
+void DrawFlower(float x, float y, float colorR, float colorG, float colorB , float innerColorR, float innerColorG, float innerColorB)
+{   
+    glPushMatrix();
+    glTranslatef(x, y, 0.0f);
+    //draw stem
+    glBegin(GL_QUADS);
+    glColor3f(0.0f, 1.0f, 0.0f);  // Green
+    glVertex2f(-0.01f, -0.22f);
+    glVertex2f(-0.01f, 0.0f);
+    glVertex2f(0.01f, 0.0f);
+    glVertex2f(0.01f, -0.22f);
+    glEnd();
+
+    // draw flower petals
+    glPushMatrix();
+    glRotatef(0.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(0.0f, 0.065f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(colorR, colorG, colorB);  // Yellow
+    DrawOval(0.02f, 0.04f);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(0.0f, 0.065f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(colorR, colorG, colorB);  // Yellow
+    DrawOval(0.02f, 0.04f);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(0.0f, 0.065f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(colorR, colorG, colorB);  // Yellow
+    DrawOval(0.02f, 0.04f);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(135.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(0.0f, 0.065f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(colorR, colorG, colorB);  // Yellow
+    DrawOval(0.02f, 0.04f);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(0.0f, 0.065f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(colorR, colorG, colorB);  // Yellow
+    DrawOval(0.02f, 0.04f);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(225.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(0.0f, 0.065f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(colorR, colorG, colorB);  // Yellow
+    DrawOval(0.02f, 0.04f);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(270.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(0.0f, 0.065f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(colorR, colorG, colorB);  // Yellow
+    DrawOval(0.02f, 0.04f);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(315.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(0.0f, 0.065f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(colorR, colorG, colorB);  // Yellow
+    DrawOval(0.02f, 0.04f);
+    glEnd();
+    glPopMatrix();
+
+    // draw flower center
+    glBegin(GL_POLYGON);
+    glColor3f(innerColorR, innerColorG, innerColorB);  // Brown
+    DrawCircle(0.04);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+    glColor3f(colorR, colorG, colorB);  // Yellow
+    DrawCircle(0.02);
+    glEnd();
+
+    glPopMatrix();
+
+}
+
+void DrawFloorBrown(){
+
+    // draw circle floor
+    glPushMatrix();
+    glTranslatef(0.8f, -1.2f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(0.59f, 0.39f, 0.28f);  // brown
+    DrawCircle(0.6f);
+    glEnd();
+    glPopMatrix();
+
+    // draw circle floor
+    glPushMatrix();
+    glTranslatef(-0.8f, -1.2f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(0.59f, 0.39f, 0.28f);  // brown
+    DrawCircle(0.6f);
+    glEnd();
+    glPopMatrix();
+
+    // draw circle floor
+    glPushMatrix();
+    glTranslatef(0.0f, -1.2f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(0.59f, 0.39f, 0.28f);  // brown
+    DrawCircle(0.8f);
+    glEnd();
+    glPopMatrix();
+}
+
+void DrawFloorGreen(){
+
+    // draw circle floor
+    glPushMatrix();
+    glTranslatef(0.8f, -1.2f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(0.0f, 0.5f, 0.0f);  // green
+    DrawCircle(0.6f);
+    glEnd();
+    glPopMatrix();
+
+    // draw circle floor
+    glPushMatrix();
+    glTranslatef(-0.8f, -1.2f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(0.0f, 0.5f, 0.0f);  // green
+    DrawCircle(0.6f);
+    glEnd();
+    glPopMatrix();
+
+    // draw circle floor
+    glPushMatrix();
+    glTranslatef(0.0f, -1.2f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(0.0f, 0.5f, 0.0f);  // green
+    DrawCircle(0.8f);
+    glEnd();
+    glPopMatrix();
+}
 
 // Keyboard input
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -86,41 +361,188 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             case GLFW_KEY_P:
                 rotationangle -= movementspeed;
                 break;
+            case GLFW_KEY_SPACE:
+                rotationSpeed *= 0.0f;
+                break;
+            case GLFW_KEY_A:
+                rotationSpeed += 0.1f;
+                break;
+            case GLFW_KEY_S:
+                rotationSpeed -= 0.1f;
+                break;
+            case GLFW_KEY_Q:
+                movementspeed *= -1.0f;
+                break;
         }
 
     }
 }
 
+void DrawCloud(){
+    glPushMatrix();
+    glBegin(GL_POLYGON);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    DrawCircle(0.1);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.1f, -0.04f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    DrawCircle(0.06);
+    glEnd();
+
+    glPushMatrix();
+    glTranslatef(0.06f, 0.00f, 0.0f);
+    glScalef(1.7f, 1.0f, 1.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    DrawCircle(0.04);
+    glEnd();
+
+    glPushMatrix();
+    glTranslatef(-0.15f, 0.01f, 0.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    DrawCircle(0.08);
+    glEnd();
+
+    glPushMatrix();
+    glTranslatef(-0.06f, 0.00f, 0.0f);
+    glScalef(1.5f, 1.0f, 1.0f);
+    glBegin(GL_POLYGON);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    DrawCircle(0.02);
+    glEnd();
+    glPopMatrix();
+    glPopMatrix();
+
+
+
+}
+
+
+
 void one()
 {
+    /* 
+    
+    Draw the scene 
+    
+    
+    */
+    // draw sky
     glLoadIdentity();
-
-    glTranslatef(positionx, positiony,0);
-    glRotatef(rotationangle,0,0,1);
-
-
     glBegin(GL_QUADS);
-
-    glColor3f(1,1,1);
-
-    glVertex2f(-0.8f,0.5f);
-    glVertex2f(-0.8f,0);
-    glVertex2f(0.8f,0);
-    glVertex2f(0.8f,0.5f);
-
+    glColor3f(0.6f, 0.6f, 1.0f);
+    glVertex2f(-1.0f, 1.0f);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glVertex2f(-1.0f, -1.0f);
+    glVertex2f(1.0f, -1.0f);
+    glColor3f(0.6f, 0.6f, 1.0f);
+    glVertex2f(1.0f, 1.0f);
     glEnd();
 
 
+    /* 
+    Draw the clouds
+    */
+    glPushMatrix();
+    glTranslatef(positionx, positiony, 0.0f);
+    glTranslatef(0.0f, 0.5f, 0.0f);
+    DrawCloud();
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(-0.6f+ positionx, 0.8f + positiony, 0.0f);
+    glScalef(0.7, 0.7, 0.7);
+    DrawCloud();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.5f + positionx, 0.7f + positiony, 0.0f);
+    glScalef(-0.4, 0.4, 0.7);
+    DrawCloud();
+    glPopMatrix();
+
+
+
+    /* 
+    Draw the floor
+
+    */
+    DrawFloorBrown();
+    // if fan speed more than 5.0f or less than -5.0f move down
+    if (rotationSpeed > 5.0f || rotationSpeed < -5.0f)
+    {
+        positiony -= 0.01f;
+    }
+    // if reset fan speed to 0.0f set to original position
+    if (rotationSpeed == 0.0f)
+    {
+        positiony = 0.0f;
+    }
+    glPushMatrix();
+    glTranslatef(positionx, positiony, 0.0f);
+    DrawFloorGreen();
+
+    /* 
+    Draw the flowers
+    */
+    DrawFlower(-0.65f, -0.65f, 1.0f, 0.9f, 0.0f, 1.0f, 0.0f, 0.0f);// Yellow right flower
+    DrawFlower(-0.9f, -0.7f, 1.0f, 0.9f, 0.0f, 1.0f, 0.0f, 0.0f);// Yellow left flower
+    DrawFlower(-0.75f, -0.75f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);// Red left flower
+    DrawFlower(-0.5f, -0.7f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);// Red right flower
+    DrawFlower(0.5f, -0.65f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f);// Yellow left flower
+    DrawFlower(0.8f, -0.65f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f);// Yellow left flower
+    DrawFlower(0.6f, -0.7f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);// Magenta right flower
+    DrawFlower(0.9f, -0.7f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);// Magenta right flower
+    glPopMatrix();
+    /*
+    Draw the house
+    */
+    // draw house body
+    glPushMatrix();
+    glTranslatef(0.0f, -0.5f, 0.0f);
+    glScalef(0.5f, 0.5f, 1.0f);
     glBegin(GL_QUADS);
-
-    glColor3f(0,0,0);
-
-    glVertex2f(-0.8f,0);
-    glVertex2f(-0.8f,-0.5f);
-    glVertex2f(0.8f,-0.5f);
-    glVertex2f(0.8f,0);
-
+    glColor3f(0.26f, 0.17f, 0.15f);  // #422c26
+    glVertex2f(-0.3f, 0.5f);
+    glVertex2f(0.3f, 0.5f);
+    glVertex2f(0.8f, -0.5f);
+    glVertex2f(-0.8f, -0.5f);
     glEnd();
+    glPopMatrix();
+
+    // draw roof
+    glPushMatrix();
+    glTranslatef(0.0f, -0.099f, 0.0f);
+    glScalef(0.3f, 0.3f, 1.0f);
+    glBegin(GL_QUADS);
+    glColor3f(1.0f, 0.0f, 0.0f);  // red
+    glVertex2f(-0.3f, 0.8f);
+    glVertex2f(0.3f, 0.8f);
+    glVertex2f(0.9f, -0.5f);
+    glVertex2f(-0.9f, -0.5f);
+    glEnd();
+    glPopMatrix();
+
+    /*
+    Draw the fan
+    */
+    /* make spin */
+    if (rotationSpeed > 0.0f || rotationSpeed < 0.0f)
+    {
+        rotationangle += rotationSpeed;
+    }
+    
+    glPushMatrix();
+    glRotatef(rotationangle+rotationSpeed, 0.0f, 0.0f, 1.0f);
+    DrawFan();
+    glPopMatrix();
+
 }
 
 void two()
