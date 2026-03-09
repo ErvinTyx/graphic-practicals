@@ -2,14 +2,18 @@
 #include <GLFW/glfw3.h>
 #include <math.h>
 #include <stdio.h>
+#include <iostream>
 
 // Global variables
 int questionNum = 1;
 
 float positionx = 0.0f;
 float positiony = 0.0f;
-float movementspeed = 0.1f;
+float movementspeed = 10.0f;
 float rotationangle = 0.0f;
+float rotationx = 0.0f;
+float rotationy = 0.0f;
+float rotationz = 0.0f;
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -81,10 +85,35 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
             case GLFW_KEY_O:
                 rotationangle += movementspeed;
+                std::cout << "Rotation angle: " << rotationangle << std::endl;
                 break;
 
             case GLFW_KEY_P:
                 rotationangle -= movementspeed;
+                std::cout << "Rotation angle: " << rotationangle << std::endl;
+                break;
+
+            // key to rotate x y,z axis
+            case GLFW_KEY_X:
+                if (rotationx == 1.0f)
+                    rotationx = 0.0f;
+                else
+                    rotationx = 1.0f;
+                std::cout << "Rotation x: " << rotationx << std::endl;
+                break;
+            case GLFW_KEY_Y:
+                if (rotationy == 1.0f)
+                    rotationy = 0.0f;
+                else
+                    rotationy = 1.0f;
+                std::cout << "Rotation y: " << rotationy << std::endl;
+                break;
+            case GLFW_KEY_Z:
+                if (rotationz == 1.0f)
+                    rotationz = 0.0f;
+                else
+                    rotationz = 1.0f;
+                std::cout << "Rotation z: " << rotationz << std::endl;
                 break;
         }
 
@@ -93,248 +122,109 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void one()
 {
-    glLoadIdentity();
+   // 3D cube
+   glPushMatrix();
+    glRotatef(rotationangle, rotationx, rotationy, rotationz);
+   
+   // draw my first quad ,front face
+    // white color
+   glBegin(GL_QUADS);
+   glColor3f(1.0f,1.0f, 1.0f);
+   glVertex3f(-0.5f,0.5f,0.5f);
+   glVertex3f(-0.5f,-0.5f,0.5f);
+   glVertex3f(0.5f,-0.5f,0.5f);
+   glVertex3f(0.5f,0.5f,0.5f);
+   glEnd();
 
-    glTranslatef(positionx, positiony,0);
-    glRotatef(rotationangle,0,0,1);
-
-
+   // green color
+   // Right face
+   glPushMatrix();
+   glRotatef(90.0f,0.0f,1.0f,.0f);
     glBegin(GL_QUADS);
+   glColor3f(0.0f,1.0f, 1.0f);
+   glVertex3f(-0.5f,0.5f,0.5f);
+   glVertex3f(-0.5f,-0.5f,0.5f);
+   glVertex3f(0.5f,-0.5f,0.5f);
+   glVertex3f(0.5f,0.5f,0.5f);
+   glEnd();
+   glPopMatrix();
 
-    glColor3f(1,1,1);
-
-    glVertex2f(-0.8f,0.5f);
-    glVertex2f(-0.8f,0);
-    glVertex2f(0.8f,0);
-    glVertex2f(0.8f,0.5f);
-
-    glEnd();
-
-
+    // blue color
+    // back face
+   glPushMatrix();
+   glRotatef(180.0f,0.0f,1.0f,.0f);
     glBegin(GL_QUADS);
+   glColor3f(0.0f,0.0f, 1.0f);
+   glVertex3f(-0.5f,0.5f,0.5f);
+   glVertex3f(-0.5f,-0.5f,0.5f);
+   glVertex3f(0.5f,-0.5f,0.5f);
+   glVertex3f(0.5f,0.5f,0.5f);
+   glEnd();
+   glPopMatrix();
 
-    glColor3f(0,0,0);
+   glPushMatrix();
+   glRotatef(270.0f,0.0f,1.0f,.0f);
+    glBegin(GL_QUADS);
+   glColor3f(0.0f,1.0f, 0.0f);
+   glVertex3f(-0.5f,0.5f,0.5f);
+   glVertex3f(-0.5f,-0.5f,0.5f);
+   glVertex3f(0.5f,-0.5f,0.5f);
+   glVertex3f(0.5f,0.5f,0.5f);
+   glEnd();
+   glPopMatrix();
 
-    glVertex2f(-0.8f,0);
-    glVertex2f(-0.8f,-0.5f);
-    glVertex2f(0.8f,-0.5f);
-    glVertex2f(0.8f,0);
+   glPushMatrix();
+   glRotatef(90.0f,1.0f,0.0f,.0f);
+    glBegin(GL_QUADS);
+   glColor3f(1.0f,0.0f, 0.0f);
+   glVertex3f(-0.5f,0.5f,0.5f);
+   glVertex3f(-0.5f,-0.5f,0.5f);
+   glVertex3f(0.5f,-0.5f,0.5f);
+   glVertex3f(0.5f,0.5f,0.5f);
+   glEnd();
+   glPopMatrix();
 
-    glEnd();
+   glPushMatrix();
+   glRotatef(270.0f,1.0f,0.0f,.0f);
+    glBegin(GL_QUADS);
+   glColor3f(1.0f,0.0f, 1.0f);
+   glVertex3f(-0.5f,0.5f,0.5f);
+   glVertex3f(-0.5f,-0.5f,0.5f);
+   glVertex3f(0.5f,-0.5f,0.5f);
+   glVertex3f(0.5f,0.5f,0.5f);
+   glEnd();
+   glPopMatrix();
+
+   glPopMatrix();
+    
+
+ 
 }
 
 void two()
 {
-    glBegin(GL_QUADS);
-    glColor3f(1.0f, 1.0f, 0.0f);  //yellow
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(-0.8f, -0.5f);
-    glVertex2f(0.8f, -0.5f);
-    glVertex2f(0.8f, 0.5f);
-    glEnd();
-
-    glBegin(GL_TRIANGLES);
-    glColor3f(1.0f, 0.0f, 0.0f);  //red
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(0.0f, 0.5f);
-    glVertex2f(0.0f, 0.0f);
-    glEnd();
-
-    glBegin(GL_TRIANGLES);
-    glColor3f(0.0f, 0.0f, 0.0f);  //black
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(-0.8f, 0.0f);
-    glVertex2f(0.0f, 0.0f);
-    glEnd();
+    
 }
 
 void three()
 {
-    glBegin(GL_TRIANGLE_FAN);
-    glColor3f(1.0f, 1.0f, 1.0f);  // white center
-    glVertex2f(0.0f, 0.0f);
-
-    glColor3f(0.65f, 0.65f, 0.65f);  // light grey edges
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(-0.8f, -0.5f);
-    glVertex2f(0.8f, -0.5f);
-    glVertex2f(0.8f, 0.5f);
-
-    glVertex2f(-0.8f, 0.5f);  // close fan
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glColor3f(1.0f, 0.0f, 0.0f);  //red
-    glVertex2f(-0.1f, 0.5f);
-    glVertex2f(-0.1f, -0.5f);
-    glVertex2f(0.1f, -0.5f);
-    glVertex2f(0.1f, 0.5f);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glColor3f(1.0f, 0.0f, 0.0f);  //red
-    glVertex2f(-0.8f, 0.1f);
-    glVertex2f(-0.8f, -0.1f);
-    glVertex2f(0.8f, -0.1f);
-    glVertex2f(0.8f, 0.1f);
-    glEnd();
+    
 }
 
 void four()
 {
-    // draw rectangle
-    glBegin(GL_QUADS);
-    glColor3f(0.0f, 0.0f, 1.0f);  //blue
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(-0.8f, -0.5f);
-    glVertex2f(0.8f, -0.5f);
-    glVertex2f(0.8f, 0.5f);
-    glEnd();
-
-    // draw polygon top left to bottom right
-    glBegin(GL_POLYGON); 
-    glColor3f(1.0f, 1.0f,1.0f);  //white
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(-0.7f, 0.5f);
-    glVertex2f(0.8f, -0.4f);
-    glVertex2f(0.8f, -0.5f);
-    glVertex2f(0.7f,-0.5f);
-    glVertex2f(-0.8f, 0.4f);
-    glEnd();
-
-    // draw polygon top right to bottom left
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 1.0f, 1.0f);  //white
-    glVertex2f(0.8f, 0.5f);
-    glVertex2f(0.7f, 0.5f);
-    glVertex2f(-0.8f, -0.4f);
-    glVertex2f(-0.8f, -0.5f);
-    glVertex2f(-0.7f, -0.5f);
-    glVertex2f(0.8f, 0.4f);
-    glEnd();
+    
 
 
 }
 
 void five()
 {
-    glBegin(GL_QUADS);
-    glColor3f(1.0f, 1.0f, 1.0f);  //white
-    glVertex2f(-0.8f, 0.5f);
-    glVertex2f(-0.8f, -0.5f);
-    glVertex2f(0.8f, -0.5f);
-    glVertex2f(0.8f, 0.5f);
-    glEnd();
-
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 0.0f, 0.0f);  //red
-    DrawCircle(0.2);
-    glEnd();
+    
 }
 
 void six()
 {
-    // draw vomit emoji
-    // draw face
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 1.0f, 0.0f);  //yellow
-    DrawCircle(0.5);
-    glEnd();
-
-    // draw mouth
-    // Top Left — Red
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glVertex2f(-0.2f, -0.1f);
-
-    // Bottom Left — Orange/Red
-    glColor3f(1.0f, 0.5f, 0.0f);
-    glVertex2f(-0.2f, -0.5f);
-
-    // Bottom Right — Violet
-    glColor3f(0.5f, 0.0f, 1.0f);
-    glVertex2f(0.2f, -0.5f);
-
-    // Top Right — Blue/Violet
-    glColor3f(0.3f, 0.0f, 1.0f);
-    glVertex2f(0.2f, -0.1f);
-
-    glEnd();
-
-    // draw right eyes
-    glBegin(GL_POLYGON);
-    glColor3f(0.8863f, 0.6157f, 0.1765f);  // #E29D2D
-    for (int i = 0; i < 360; i += 10)
-    {
-        float tempX = 0.1f * sin(DegreeToRadian(i)) + 0.2f;
-        float tempY = 0.1f * cos(DegreeToRadian(i)) + 0.2f;
-
-        glVertex2f(tempX, tempY);
-    }
-    glEnd();
-
-    // draw left eye
-    glBegin(GL_POLYGON);
-    glColor3f(0.8863f, 0.6157f, 0.1765f);  // #E29D2D
-    for (int i = 0; i < 360; i += 10)
-    {
-        float tempX = 0.1f * sin(DegreeToRadian(i)) + -0.2f;
-        float tempY = 0.1f * cos(DegreeToRadian(i)) + 0.2f;
-
-        glVertex2f(tempX, tempY);
-    }
-    glEnd();
-
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 1.0f, 1.0f);  // white
-    for (int i = 0; i < 360; i += 10)
-    {
-        float tempX = 0.05f * sin(DegreeToRadian(i)) + -0.2f;
-        float tempY = 0.05f * cos(DegreeToRadian(i)) + 0.2f;
-
-        glVertex2f(tempX, tempY);
-    }
-    glEnd();
-
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 1.0f, 1.0f);  // white
-    for (int i = 0; i < 360; i += 10)
-    {
-        float tempX = 0.05f * sin(DegreeToRadian(i)) + 0.2f;
-        float tempY = 0.05f * cos(DegreeToRadian(i)) + 0.2f;
-
-        glVertex2f(tempX, tempY);
-    }
-    glEnd();
-
-
-
-    // draw rectangle hat
-    glBegin(GL_QUADS);
-    glColor3f(0.0f, 0.0f, 0.0f);  //black
-    glVertex2f(-0.3f, 0.7f);
-    glVertex2f(0.3f, 0.7f);
-    glVertex2f(0.3f, 0.5f);
-    glVertex2f(-0.3f, 0.5f);
-    glEnd();
-
-    // draw rectangle hat
-    glBegin(GL_QUADS);
-    glColor3f(0.0f, 0.0f, 0.0f);  //black
-    glVertex2f(-0.3f, 0.5f);
-    glVertex2f(0.3f, 0.5f);
-    glVertex2f(0.6f, 0.35f);
-    glVertex2f(-0.6f, 0.35f);
-    glEnd();
-
-    // draw nose
-    glBegin(GL_TRIANGLES);
-    glColor3f(0.8863f, 0.6157f, 0.1765f);  // #E29D2D
-    glVertex2f(0.0f, 0.1f);
-    glVertex2f(-0.03f, 0.0f);
-    glVertex2f(0.03f, 0.0f);
-    glEnd();
-
     
 }
 
@@ -343,7 +233,8 @@ void display()
 {
 
     glClearColor(0.3f,0.3f,0.3f,1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
 
     switch(questionNum)
     {
