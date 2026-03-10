@@ -14,6 +14,7 @@ float rotationangle = 0.0f;
 float rotationx = 0.0f;
 float rotationy = 0.0f;
 float rotationz = 0.0f;
+float rotationSpecificField = 0.0f;
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -26,7 +27,56 @@ void three();
 void four();
 void five();
 void six();
+void drawRectangle();
 
+void drawRectangle()
+{
+    glBegin(GL_QUADS);
+
+    // Front face
+    glColor3f(0.0f, 0.0f, 1.0f); // blue
+    glVertex3f(-0.8f, 0.3f, 0.5f);
+    glVertex3f(-0.8f,-0.3f, 0.5f);
+    glVertex3f( 0.0f,-0.3f, 0.5f);
+    glVertex3f( 0.0f, 0.3f, 0.5f);
+
+    // Back face
+    glColor3f(0.0f, 1.0f, 1.0f); // Cyan
+    glVertex3f(-0.8f, 0.3f, -0.5f);
+    glVertex3f(-0.8f,-0.3f, -0.5f);
+    glVertex3f( 0.0f,-0.3f, -0.5f);
+    glVertex3f( 0.0f, 0.3f, -0.5f);
+
+    // Left face
+    glColor3f(1.0f, 0.0f, 0.0f); // Red
+    glVertex3f(-0.8f, 0.3f, 0.5f);
+    glVertex3f(-0.8f,-0.3f, 0.5f);
+    glVertex3f(-0.8f,-0.3f,-0.5f);
+    glVertex3f(-0.8f, 0.3f,-0.5f);
+
+    // Right face
+    glColor3f(0.0f, 1.0f, 0.0f); // Green
+    glVertex3f(0.0f, 0.3f, 0.5f);
+    glVertex3f(0.0f,-0.3f, 0.5f);
+    glVertex3f(0.0f,-0.3f,-0.5f);
+    glVertex3f(0.0f, 0.3f,-0.5f);
+
+    // Top face
+    glColor3f(1.0f, 1.0f, 0.0f); // Yellow
+    glVertex3f(-0.8f, 0.3f, 0.5f);
+    glVertex3f( 0.0f, 0.3f, 0.5f);
+    glVertex3f( 0.0f, 0.3f,-0.5f);
+    glVertex3f(-0.8f, 0.3f,-0.5f);
+
+    // Bottom face
+    glColor3f(1.0f, 0.0f, 1.0f); // Magenta
+    glVertex3f(-0.8f,-0.3f, 0.5f);
+    glVertex3f( 0.0f,-0.3f, 0.5f);
+    glVertex3f( 0.0f,-0.3f,-0.5f);
+    glVertex3f(-0.8f,-0.3f,-0.5f);
+
+    glEnd();
+}
 // Convert degree to radian
 float DegreeToRadian(float degree)
 {
@@ -47,7 +97,17 @@ void DrawCircle(float radius)
 }
 
 
-
+void reset()
+{
+    positionx = 0.0f;
+    positiony = 0.0f;
+    movementspeed = 10.0f;
+    rotationangle = 0.0f;
+    rotationx = 0.0f;
+    rotationy = 0.0f;
+    rotationz = 0.0f;
+    rotationSpecificField = 0.0f;
+}
 // Keyboard input
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -60,27 +120,27 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                 glfwSetWindowShouldClose(window, 1);
                 break;
 
-            case GLFW_KEY_1: questionNum = 1; break;
-            case GLFW_KEY_2: questionNum = 2; break;
-            case GLFW_KEY_3: questionNum = 3; break;
-            case GLFW_KEY_4: questionNum = 4; break;
-            case GLFW_KEY_5: questionNum = 5; break;
-            case GLFW_KEY_6: questionNum = 6; break;
+            case GLFW_KEY_1: questionNum = 1; reset(); break;
+            case GLFW_KEY_2: questionNum = 2; reset(); break;
+            case GLFW_KEY_3: questionNum = 3; reset(); break;
+            case GLFW_KEY_4: questionNum = 4; reset(); break;
+            case GLFW_KEY_5: questionNum = 5; reset(); break;
+            case GLFW_KEY_6: questionNum = 6; reset(); break;
 
             case GLFW_KEY_UP:
-                positiony += movementspeed;
+                positiony += 0.01f;
                 break;
 
             case GLFW_KEY_DOWN:
-                positiony -= movementspeed;
+                positiony -= 0.01f;
                 break;
 
             case GLFW_KEY_LEFT:
-                positionx -= movementspeed;
+                rotationSpecificField -= 10.0f;
                 break;
 
             case GLFW_KEY_RIGHT:
-                positionx += movementspeed;
+                rotationSpecificField += 10.0f;
                 break;
 
             case GLFW_KEY_O:
@@ -95,25 +155,61 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
             // key to rotate x y,z axis
             case GLFW_KEY_X:
-                if (rotationx == 1.0f)
-                    rotationx = 0.0f;
-                else
+                if (questionNum == 1)
+                {
                     rotationx = 1.0f;
+                    rotationy = 0.0f;
+                    rotationz = 0.0f;
+                }else
+                {
+                    if (rotationx == 1.0f)
+                    {
+                        rotationx = 0.0f;
+                    }else
+                    {
+                        rotationx = 1.0f;
+                    }
+                }
                 std::cout << "Rotation x: " << rotationx << std::endl;
                 break;
             case GLFW_KEY_Y:
-                if (rotationy == 1.0f)
-                    rotationy = 0.0f;
-                else
+                if (questionNum == 1)
+                {
+                    rotationx = 0.0f;
                     rotationy = 1.0f;
+                    rotationz = 0.0f;
+                }else
+                {
+                    if (rotationy == 1.0f)
+                    {
+                        rotationy = 0.0f;
+                    }else
+                    {
+                        rotationy = 1.0f;
+                    }
+                }
                 std::cout << "Rotation y: " << rotationy << std::endl;
                 break;
             case GLFW_KEY_Z:
-                if (rotationz == 1.0f)
-                    rotationz = 0.0f;
-                else
+                if (questionNum == 1)
+                {
+                    rotationx = 0.0f;
+                    rotationy = 0.0f;
                     rotationz = 1.0f;
+                }else
+                {
+                    if (rotationz == 1.0f)                    
+                    {
+                        rotationz = 0.0f;
+                    }else
+                    {
+                        rotationz = 1.0f;
+                    }
+                }
                 std::cout << "Rotation z: " << rotationz << std::endl;
+                break;
+            case GLFW_KEY_SPACE:
+                reset();
                 break;
         }
 
@@ -122,87 +218,66 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void one()
 {
-   // 3D cube
-   glPushMatrix();
+    rotationangle += movementspeed;
+   // 3D pyramid
+
+    glPushMatrix();
     glRotatef(rotationangle, rotationx, rotationy, rotationz);
-   
-   // draw my first quad ,front face
-    // white color
-   glBegin(GL_QUADS);
-   glColor3f(1.0f,1.0f, 1.0f);
-   glVertex3f(-0.5f,0.5f,0.5f);
-   glVertex3f(-0.5f,-0.5f,0.5f);
-   glVertex3f(0.5f,-0.5f,0.5f);
-   glVertex3f(0.5f,0.5f,0.5f);
-   glEnd();
+    glBegin(GL_LINE_LOOP);
+    glColor3f(1,0,0);
+    glVertex3f(0.0f,0.5f,0.0f);
+    glVertex3f(-0.5f,-0.5f,0.5f);
+    glVertex3f(0.5f,-0.5f,0.5f);
+    glEnd();
 
-   // green color
-   // Right face
-   glPushMatrix();
-   glRotatef(90.0f,0.0f,1.0f,.0f);
-    glBegin(GL_QUADS);
-   glColor3f(0.0f,1.0f, 1.0f);
-   glVertex3f(-0.5f,0.5f,0.5f);
-   glVertex3f(-0.5f,-0.5f,0.5f);
-   glVertex3f(0.5f,-0.5f,0.5f);
-   glVertex3f(0.5f,0.5f,0.5f);
-   glEnd();
-   glPopMatrix();
+    glBegin(GL_LINE_LOOP);
+    glColor3f(0,1,0);
+    glVertex3f(0.0f,0.5f,0.0f);
+    glVertex3f(0.5f,-0.5f,0.5f);
+    glVertex3f(0.5f,-0.5f,-0.5f);
+    glEnd();
 
-    // blue color
-    // back face
-   glPushMatrix();
-   glRotatef(180.0f,0.0f,1.0f,.0f);
-    glBegin(GL_QUADS);
-   glColor3f(0.0f,0.0f, 1.0f);
-   glVertex3f(-0.5f,0.5f,0.5f);
-   glVertex3f(-0.5f,-0.5f,0.5f);
-   glVertex3f(0.5f,-0.5f,0.5f);
-   glVertex3f(0.5f,0.5f,0.5f);
-   glEnd();
-   glPopMatrix();
+    glBegin(GL_LINE_LOOP);
+    glColor3f(0,0,1);
+    glVertex3f(0.0f,0.5f,0.0f);
+    glVertex3f(0.5f,-0.5f,-0.5f);
+    glVertex3f(-0.5f,-0.5f,-0.5f);
+    glEnd();
 
-   glPushMatrix();
-   glRotatef(270.0f,0.0f,1.0f,.0f);
-    glBegin(GL_QUADS);
-   glColor3f(0.0f,1.0f, 0.0f);
-   glVertex3f(-0.5f,0.5f,0.5f);
-   glVertex3f(-0.5f,-0.5f,0.5f);
-   glVertex3f(0.5f,-0.5f,0.5f);
-   glVertex3f(0.5f,0.5f,0.5f);
-   glEnd();
-   glPopMatrix();
+    glBegin(GL_LINE_LOOP);
+    glColor3f(1,1,0);
+    glVertex3f(0.0f,0.5f,0.0f);
+    glVertex3f(-0.5f,-0.5f,-0.5f);
+    glVertex3f(-0.5f,-0.5f,0.5f);
+    glEnd();
 
-   glPushMatrix();
-   glRotatef(90.0f,1.0f,0.0f,.0f);
-    glBegin(GL_QUADS);
-   glColor3f(1.0f,0.0f, 0.0f);
-   glVertex3f(-0.5f,0.5f,0.5f);
-   glVertex3f(-0.5f,-0.5f,0.5f);
-   glVertex3f(0.5f,-0.5f,0.5f);
-   glVertex3f(0.5f,0.5f,0.5f);
-   glEnd();
-   glPopMatrix();
+    glPopMatrix();
 
-   glPushMatrix();
-   glRotatef(270.0f,1.0f,0.0f,.0f);
-    glBegin(GL_QUADS);
-   glColor3f(1.0f,0.0f, 1.0f);
-   glVertex3f(-0.5f,0.5f,0.5f);
-   glVertex3f(-0.5f,-0.5f,0.5f);
-   glVertex3f(0.5f,-0.5f,0.5f);
-   glVertex3f(0.5f,0.5f,0.5f);
-   glEnd();
-   glPopMatrix();
-
-   glPopMatrix();
-    
 
  
 }
 
 void two()
 {
+    glPushMatrix();
+    glTranslatef(positionx, positiony, 0.0f);
+    glRotatef(rotationangle, rotationx, rotationy, rotationz);
+    
+    glPushMatrix();
+    glRotatef(rotationSpecificField, 0.0f, 0.0f, 1.0f);
+    drawRectangle();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(-rotationSpecificField, 0.0f, 0.0f, 1.0f);
+    glPushMatrix();
+    glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
+    drawRectangle();
+    glPopMatrix();
+    glPopMatrix();
+
+    glPopMatrix();
+
     
 }
 
